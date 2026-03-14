@@ -137,8 +137,8 @@
         async function fetchApps() {
             allApps = []; 
             const t = Date.now();
-            await loadFile('uygulamalar.txt?t=' + t, true);
-            await loadFile('https://raw.githubusercontent.com/hasaneymenkartalprollc8-gif/apps/main/online.app.s?t=' + t, false);
+            // Kendi repondan veriyi çekiyoruz
+            await loadFile('https://raw.githubusercontent.com/fixing-by/fixapp/main/online.app.s?t=' + t, false);
             filterAll();
         }
 
@@ -164,7 +164,7 @@
                         }
                     });
                 }
-            } catch (e) { console.error("Veri çekilemedi:", url); }
+            } catch (e) { console.error("Veri hatası:", e); }
         }
 
         function setFilter(type, btn) {
@@ -217,7 +217,6 @@
                 const btn = document.createElement('a');
                 btn.className = "download-btn";
 
-                // Etiketi ve Linki Ayıkla
                 const match = rawLink.match(/\[(.*?)\](.*)/);
                 let plat = "İNDİR";
                 let cleanUrl = rawLink.trim();
@@ -229,31 +228,27 @@
 
                 if (cleanUrl === "" || cleanUrl === "#") {
                     btn.href = "#";
-                    btn.textContent = plat.toUpperCase() + " (LİNK YOK)";
-                    btn.style.background = "#555";
-                    btn.style.cursor = "not-allowed";
-                    btn.onclick = (e) => e.preventDefault();
+                    btn.textContent = plat.toUpperCase() + " (YAKINDA)";
+                    btn.style.background = "#444";
                 } 
-                // GİTHUB DOSYA KONTROLÜ
-                // Eğer link http ile başlamıyorsa, github raw linkine çevir
                 else if (!cleanUrl.startsWith('http')) {
-                    const repoPath = "hasaneymenkartalprollc8-gif/apps/main/";
-                    btn.href = `https://raw.githubusercontent.com/${repoPath}${cleanUrl}`;
+                    // SENİN REPO YOLUN: fixing-by/fixapp
+                    const repoBase = "https://raw.githubusercontent.com/fixing-by/fixapp/main/";
+                    btn.href = repoBase + cleanUrl;
                     btn.setAttribute('download', cleanUrl);
                     btn.textContent = plat.toUpperCase() + " DOSYASINI İNDİR";
                 } 
-                // NORMAL DIŞ BAĞLANTI
                 else {
                     btn.href = cleanUrl;
                     btn.target = "_blank";
                     btn.textContent = plat.toUpperCase() + " SÜRÜMÜNE GİT";
                 }
                 
-                // Renk Ayarları
+                // Renk Şeması
                 if(plat === 'android') btn.style.background = "#3DDC84";
                 if(plat === 'windows') { btn.style.background = "#0078D4"; btn.style.color = "white"; }
-                if(plat === 'lynx') btn.style.background = "linear-gradient(90deg, #00f2ff, #ff00ea)";
                 if(plat === 'ios') { btn.style.background = "#ffffff"; btn.style.color = "black"; }
+                if(plat === 'lynx') btn.style.background = "linear-gradient(90deg, #00f2ff, #ff00ea)";
 
                 container.appendChild(btn);
             });
