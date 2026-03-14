@@ -164,7 +164,7 @@
                         }
                     });
                 }
-            } catch (e) {}
+            } catch (e) { console.error("Veri çekilemedi:", url); }
         }
 
         function setFilter(type, btn) {
@@ -215,27 +215,46 @@
             
             app.links.forEach((rawLink) => {
                 const btn = document.createElement('a');
-                btn.target = "_blank";
                 btn.className = "download-btn";
 
-                // ÖNEMLİ: Etiketi ayıkla ve temiz URL'yi al
+                // Etiketi ve Linki Ayıkla
                 const match = rawLink.match(/\[(.*?)\](.*)/);
-                
-                if (match) {
-                    const plat = match[1].toLowerCase();
-                    const cleanUrl = match[2].trim(); // Burası sadece linki alır
+                let plat = "İNDİR";
+                let cleanUrl = rawLink.trim();
 
-                    btn.href = cleanUrl;
-                    btn.textContent = plat.toUpperCase() + " SÜRÜMÜNÜ İNDİR";
-                    
-                    if(plat === 'android') btn.style.background = "#3DDC84";
-                    if(plat === 'windows') { btn.style.background = "#0078D4"; btn.style.color = "white"; }
-                    if(plat === 'ios') btn.style.background = "#ffffff";
-                    if(plat === 'lynx') btn.style.background = "linear-gradient(90deg, #00f2ff, #ff00ea)";
-                } else {
-                    btn.href = rawLink.trim();
-                    btn.textContent = "İNDİR / GİT";
+                if (match) {
+                    plat = match[1].toLowerCase();
+                    cleanUrl = match[2].trim();
                 }
+
+                if (cleanUrl === "" || cleanUrl === "#") {
+                    btn.href = "#";
+                    btn.textContent = plat.toUpperCase() + " (LİNK YOK)";
+                    btn.style.background = "#555";
+                    btn.style.cursor = "not-allowed";
+                    btn.onclick = (e) => e.preventDefault();
+                } 
+                // GİTHUB DOSYA KONTROLÜ
+                // Eğer link http ile başlamıyorsa, github raw linkine çevir
+                else if (!cleanUrl.startsWith('http')) {
+                    const repoPath = "hasaneymenkartalprollc8-gif/apps/main/";
+                    btn.href = `https://raw.githubusercontent.com/${repoPath}${cleanUrl}`;
+                    btn.setAttribute('download', cleanUrl);
+                    btn.textContent = plat.toUpperCase() + " DOSYASINI İNDİR";
+                } 
+                // NORMAL DIŞ BAĞLANTI
+                else {
+                    btn.href = cleanUrl;
+                    btn.target = "_blank";
+                    btn.textContent = plat.toUpperCase() + " SÜRÜMÜNE GİT";
+                }
+                
+                // Renk Ayarları
+                if(plat === 'android') btn.style.background = "#3DDC84";
+                if(plat === 'windows') { btn.style.background = "#0078D4"; btn.style.color = "white"; }
+                if(plat === 'lynx') btn.style.background = "linear-gradient(90deg, #00f2ff, #ff00ea)";
+                if(plat === 'ios') { btn.style.background = "#ffffff"; btn.style.color = "black"; }
+
                 container.appendChild(btn);
             });
             
