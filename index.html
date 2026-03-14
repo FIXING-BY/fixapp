@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fix App | Soft Style</title>
+    <title>Fix App | Premium İndirme Merkezi</title>
     <style>
         :root {
-            --bg: #121212;
-            --card-bg: #1e1e1e;
-            --accent: #00f2ff;
+            --bg: #121212; /* Soft Siyah Arkaplan */
+            --card-bg: #1e1e1e; /* Kartların yumuşak siyahı */
+            --accent: #00f2ff; /* Fixing Neon Mavisi */
             --text-main: #e0e0e0;
             --text-dim: #909090;
         }
@@ -16,7 +16,7 @@
         body {
             background-color: var(--bg);
             color: var(--text-main);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, sans-serif;
             margin: 0;
             padding: 40px 15px;
             display: flex;
@@ -24,95 +24,234 @@
             align-items: center;
         }
 
-        header { text-align: center; width: 100%; max-width: 600px; margin-bottom: 40px; }
+        header { 
+            text-align: center; 
+            width: 100%; 
+            max-width: 600px; 
+            margin-bottom: 40px; 
+        }
+
         h1 {
-            font-size: 3.5rem; margin: 0 0 20px 0;
+            font-size: 3.5rem;
+            margin: 0 0 20px 0;
             background: linear-gradient(135deg, #00f2ff, #0072ff);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             font-weight: 900;
         }
 
-        .controls { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+        /* Arama ve Filtre Kontrolleri */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
         #searchInput {
-            width: 100%; padding: 16px 25px; background: var(--card-bg);
-            border: 1px solid #333; border-radius: 20px; color: white;
-            font-size: 1rem; outline: none; box-sizing: border-box;
+            width: 100%;
+            padding: 16px 25px;
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 20px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
         }
 
-        .filters { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        #searchInput:focus {
+            border-color: var(--accent);
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
         .filter-btn {
-            background: #252525; border: 1px solid #444; color: white;
-            padding: 10px 18px; border-radius: 15px; cursor: pointer; transition: 0.3s;
+            background: #252525;
+            border: 1px solid #444;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.9rem;
         }
-        .filter-btn.active { background: var(--accent); color: black; font-weight: bold; }
 
+        .filter-btn.active {
+            background: var(--accent);
+            color: black;
+            border-color: var(--accent);
+            font-weight: bold;
+        }
+
+        /* Uygulama Kartları */
         .grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 25px; width: 100%; max-width: 1100px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1100px;
         }
 
         .card {
-            background: var(--card-bg); 
-            border-radius: 30px; 
-            padding: 25px; text-align: center; cursor: pointer;
-            transition: 0.3s; border: 1px solid #2a2a2a;
-            position: relative; overflow: hidden;
+            background: var(--card-bg);
+            border-radius: 35px; /* Köşesiz kare (Squircle) */
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid #2a2a2a;
+            position: relative;
+            overflow: hidden;
         }
 
-        .card:hover { transform: translateY(-8px); border-color: transparent; }
-        
+        /* Hover RGB Animasyonu */
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: transparent;
+        }
+
         .card::before {
-            content: ''; position: absolute; top: -50%; left: -50%;
-            width: 200%; height: 200%;
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
             background: conic-gradient(from 0deg, #ff0000, #00f2ff, #00ff00, #ffff00, #ff0000);
             animation: rotateRGB 3s linear infinite;
-            opacity: 0; transition: 0.3s; z-index: 0;
+            opacity: 0;
+            transition: 0.3s;
+            z-index: 0;
         }
-        .card:hover::before { opacity: 1; }
-        
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
         .card::after {
-            content: ''; position: absolute; inset: 3px;
-            background: var(--card-bg); z-index: 1;
-            border-radius: 27px;
+            content: '';
+            position: absolute;
+            inset: 3px;
+            background: var(--card-bg);
+            border-radius: 32px;
+            z-index: 1;
         }
-        
+
         @keyframes rotateRGB {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        .card-content { position: relative; z-index: 2; }
-
-        .card img { 
-            width: 90px; height: 90px; 
-            border-radius: 22px; 
-            margin-bottom: 12px; object-fit: cover; 
+        .card-content {
+            position: relative;
+            z-index: 2;
         }
 
+        .card img {
+            width: 90px;
+            height: 90px;
+            border-radius: 22px; /* Resim squircle */
+            margin-bottom: 12px;
+            object-fit: cover;
+            border: 1px solid #333;
+        }
+
+        .card .dev-name {
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .platforms-badges {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .badge {
+            font-size: 0.65rem;
+            background: #2a2a2e;
+            padding: 4px 8px;
+            border-radius: 8px;
+            color: #ccc;
+            border: 1px solid #444;
+        }
+
+        /* Modal / Popup */
         .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);
-            display: none; justify-content: center; align-items: center; z-index: 1000;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
+
         .modal {
-            background: var(--card-bg); width: 90%; max-width: 420px; padding: 40px;
-            border-radius: 40px; text-align: center; border: 1px solid #333; position: relative;
+            background: var(--card-bg);
+            width: 90%;
+            max-width: 420px;
+            padding: 40px;
+            border-radius: 40px;
+            text-align: center;
+            border: 1px solid #333;
+            position: relative;
         }
-        .modal img { width: 110px; height: 110px; border-radius: 25px; margin-bottom: 20px; }
+
+        .modal img {
+            width: 110px;
+            height: 110px;
+            border-radius: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #444;
+        }
 
         .download-btn {
-            display: block; background: var(--accent); color: #000;
-            text-decoration: none; padding: 18px; border-radius: 20px;
-            font-weight: 800; margin-top: 25px; 
+            display: block;
+            background: var(--accent);
+            color: #000;
+            text-decoration: none;
+            padding: 18px;
+            border-radius: 20px;
+            font-weight: 800;
+            margin-top: 25px;
             transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: none; cursor: pointer;
-        }
-        .download-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(0, 242, 255, 0.5);
+            border: none;
+            cursor: pointer;
         }
 
-        .close-btn { position: absolute; top: 20px; right: 25px; font-size: 30px; cursor: pointer; color: #555; }
+        .download-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.6);
+        }
+
+        .download-btn:active {
+            transform: scale(0.95);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #555;
+            transition: 0.3s;
+        }
+
+        .close-btn:hover { color: white; }
     </style>
 </head>
 <body>
@@ -138,9 +277,12 @@
             <span class="close-btn" onclick="closeApp()">&times;</span>
             <img id="m-img" src="">
             <h2 id="m-title" style="margin: 0 0 5px 0;"></h2>
+            
             <div id="m-dev" style="color: var(--accent); font-weight: bold; font-size: 0.85rem; margin-bottom: 10px; letter-spacing: 1px;"></div>
+            
             <div id="m-platforms" style="display:flex; justify-content:center; gap:5px; margin-bottom:20px;"></div>
             <p id="m-desc" style="color: var(--text-dim); line-height: 1.6;"></p>
+            
             <a href="#" id="m-link" class="download-btn">İNDİR</a>
         </div>
     </div>
@@ -149,9 +291,11 @@
         let apps = [];
         let currentFilter = 'all';
 
-        // TXT DOSYASINI OKUMA FONKSİYONU
+        // TXT DOSYASINI OKUMA
         async function loadAppsFromTxt() {
             try {
+                // Not: Yerelde çalıştırırken tarayıcı txt dosyasını engellerse 
+                // bir server (Live Server gibi) üzerinden açmalısın kanka.
                 const response = await fetch('uygulamalar.txt');
                 const data = await response.text();
                 const lines = data.split('\n');
@@ -169,7 +313,7 @@
                 });
                 filterAll();
             } catch (err) {
-                console.error("Txt dosyası yüklenemedi kanka:", err);
+                console.error("Uygulama listesi yüklenemedi:", err);
             }
         }
 
@@ -186,7 +330,8 @@
             grid.innerHTML = "";
 
             apps.forEach((app, index) => {
-                const matchesSearch = app.ad.toLowerCase().includes(searchTerm) || app.gelistirici.toLowerCase().includes(searchTerm);
+                const matchesSearch = app.ad.toLowerCase().includes(searchTerm) || 
+                                     app.gelistirici.toLowerCase().includes(searchTerm);
                 const matchesFilter = currentFilter === 'all' || app.platforms.includes(currentFilter);
 
                 if (matchesSearch && matchesFilter) {
@@ -194,14 +339,14 @@
                     card.className = 'card';
                     card.onclick = () => openApp(index);
                     
-                    let pBadges = app.platforms.map(p => `<span style="font-size:0.6rem; background:#333; padding:2px 6px; margin:0 2px; border-radius:4px;">${p.toUpperCase()}</span>`).join('');
+                    let pBadges = app.platforms.map(p => `<span class="badge">${p.toUpperCase()}</span>`).join('');
 
                     card.innerHTML = `
                         <div class="card-content">
                             <img src="${app.logo}" onerror="this.src='https://via.placeholder.com/90/252525/00f2ff?text=FIX'">
-                            <div style="color:var(--accent); font-size:0.75rem; font-weight:bold; margin-bottom:5px;">${app.gelistirici.toUpperCase()}</div>
-                            <h3>${app.ad}</h3>
-                            <div style="margin-top:8px;">${pBadges}</div>
+                            <div class="dev-name">${app.gelistirici.toUpperCase()}</div>
+                            <h3 style="margin:5px 0;">${app.ad}</h3>
+                            <div class="platforms-badges">${pBadges}</div>
                         </div>
                     `;
                     grid.appendChild(card);
@@ -213,12 +358,12 @@
             const app = apps[index];
             document.getElementById('m-img').src = app.logo;
             document.getElementById('m-title').textContent = app.ad;
-            document.getElementById('m-dev').textContent = "GELİŞTİRİCİ: " + app.gelistirici;
+            document.getElementById('m-dev').textContent = "GELİŞTİRİCİ: " + app.gelistirici.toUpperCase();
             document.getElementById('m-desc').textContent = app.aciklama;
             document.getElementById('m-link').href = app.link;
             
             const pDiv = document.getElementById('m-platforms');
-            pDiv.innerHTML = app.platforms.map(p => `<span style="background:#333; color:var(--accent); padding:4px 10px; border-radius:8px; font-size:0.7rem; font-weight:bold; border:1px solid var(--accent);">${p.toUpperCase()}</span>`).join('');
+            pDiv.innerHTML = app.platforms.map(p => `<span style="background:#333; color:var(--accent); padding:4px 10px; border-radius:10px; font-size:0.7rem; font-weight:bold; border:1px solid var(--accent);">${p.toUpperCase()}</span>`).join('');
 
             document.getElementById('overlay').style.display = 'flex';
         }
@@ -227,7 +372,7 @@
             document.getElementById('overlay').style.display = 'none';
         }
 
-        // Sayfa açılınca dosyayı yükle
+        // Başlat
         loadAppsFromTxt();
     </script>
 </body>
