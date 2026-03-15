@@ -51,7 +51,6 @@
     </div>
 
     <script>
-        // İKİ FARKLI KAYNAK
         const SOURCES = [
             { name: "ANA", url: "https://raw.githubusercontent.com/FIXING-BY/fixapp/main/uygulamalar.txt", badge: "badge-main" },
             { name: "CREATOR", url: "https://raw.githubusercontent.com/hasaneymenkartalprollc8-gif/apps/main/online.app.s", badge: "badge-online" }
@@ -75,7 +74,7 @@
                 } catch (e) { console.error(src.name + " verisi çekilemedi."); }
             }
             renderApps();
-            checkUrlForApp(); // Sayfa yüklendiğinde URL'yi kontrol et
+            checkUrlForApp(); 
         }
 
         function renderApps() {
@@ -105,7 +104,6 @@
         }
 
         function openApp(app) {
-            // URL'yi değiştir (Örn: ?app=FixingSearch)
             const url = new URL(window.location);
             url.searchParams.set('app', app.ad);
             window.history.pushState({}, '', url);
@@ -122,15 +120,29 @@
                 btn.className = "download-btn";
                 const match = link.match(/\[(.*?)\](.*)/);
                 let label = "İNDİR", urlLink = link;
-                if (match) { label = match[1].toUpperCase(); urlLink = match[2]; }
+                
+                if (match) { 
+                    label = match[1].toUpperCase(); 
+                    urlLink = match[2]; 
+                }
 
                 if (!urlLink.startsWith('http')) {
                     const base = app.type === "ANA" ? "FIXING-BY/fixapp" : "hasaneymenkartalprollc8-gif/apps";
                     btn.href = `https://raw.githubusercontent.com/${base}/main/${urlLink}`;
                     btn.setAttribute('download', '');
-                    btn.textContent = label + " DOSYASINI İNDİR";
+                    
+                    // Akıllı isimlendirme (Dosya ise)
+                    if (label === "İNDİR") btn.textContent = "DOSYAYI İNDİR";
+                    else btn.textContent = label + " SÜRÜMÜNÜ İNDİR";
+
                 } else {
-                    btn.href = urlLink; btn.target = "_blank"; btn.textContent = label + " GİT";
+                    btn.href = urlLink; 
+                    btn.target = "_blank"; 
+                    
+                    // Akıllı isimlendirme (Dış Link ise)
+                    if (label === "İNDİR") btn.textContent = "SİTEYE GİT";
+                    else if (label === "WEB") btn.textContent = "WEB SİTESİNE GİT";
+                    else btn.textContent = label + " SÜRÜMÜNE GİT";
                 }
                 cont.appendChild(btn);
             });
@@ -139,23 +151,17 @@
 
         function closeApp() { 
             document.getElementById('overlay').style.display = 'none'; 
-            // Kapatınca URL'yi temizle (Normal site linkine dön)
             const url = new URL(window.location);
             url.searchParams.delete('app');
             window.history.pushState({}, '', url);
         }
 
-        // URL'de "?app=UygulamaAdı" varsa otomatik açan fonksiyon
         function checkUrlForApp() {
             const params = new URLSearchParams(window.location.search);
             const targetApp = params.get('app');
-            
             if (targetApp) {
-                // Adı eşleşen uygulamayı bul
                 const appToOpen = allApps.find(a => a.ad === targetApp);
-                if (appToOpen) {
-                    openApp(appToOpen);
-                }
+                if (appToOpen) openApp(appToOpen);
             }
         }
 
