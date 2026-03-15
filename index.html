@@ -67,11 +67,18 @@
                         const text = await res.text();
                         const lines = text.split('\n').filter(l => l.trim() !== "" && !l.startsWith('s,'));
                         lines.forEach(line => {
-                            const [ad, dev, desc, plats, logo, links] = line.split(',').map(s => s.trim());
-                            allApps.push({ ad, dev, desc, plats: plats.split(' '), logo, links: links ? links.split(' ') : [], type: src.name, badgeClass: src.badge });
+                            const p = line.split(',').map(s => s.trim());
+                            if (p.length >= 5) {
+                                allApps.push({ 
+                                    ad: p[0], dev: p[1], desc: p[2], 
+                                    plats: p[3].split(' '), logo: p[4], 
+                                    links: p[5] ? p[5].split(' ') : [], 
+                                    type: src.name, badgeClass: src.badge 
+                                });
+                            }
                         });
                     }
-                } catch (e) { console.error(src.name + " verisi çekilemedi."); }
+                } catch (e) { console.error(src.name + " hatası"); }
             }
             renderApps();
             checkUrlForApp(); 
@@ -81,24 +88,12 @@
             const grid = document.getElementById('appGrid');
             const search = document.getElementById('searchInput').value.toLowerCase();
             grid.innerHTML = "";
-
             const filtered = allApps.filter(a => a.ad.toLowerCase().includes(search)).reverse();
-
-            if (filtered.length === 0) {
-                grid.innerHTML = "<p>Uygulama bulunamadı.</p>";
-                return;
-            }
-
             filtered.forEach(app => {
                 const card = document.createElement('div');
                 card.className = "card";
                 card.onclick = () => openApp(app);
-                card.innerHTML = `
-                    <div class="badge ${app.badgeClass}">${app.type}</div>
-                    <img src="${app.logo}" onerror="this.src='https://via.placeholder.com/80/222/00f2ff?text=FIX'">
-                    <p>${app.dev}</p>
-                    <h3>${app.ad}</h3>
-                `;
+                card.innerHTML = `<div class="badge ${app.badgeClass}">${app.type}</div><img src="${app.logo}" onerror="this.src='https://via.placeholder.com/80/222/00f2ff?text=FIX'"><p>${app.dev}</p><h3>${app.ad}</h3>`;
                 grid.appendChild(card);
             });
         }
@@ -112,37 +107,46 @@
             document.getElementById('m-title').textContent = app.ad;
             document.getElementById('m-dev').textContent = "Geliştirici: " + app.dev;
             document.getElementById('m-desc').textContent = app.desc;
+            
             const cont = document.getElementById('link-container');
             cont.innerHTML = "";
 
-            app.links.forEach(link => {
+            app.links.forEach(rawLink => {
+                if(!rawLink.trim()) return;
+
                 const btn = document.createElement('a');
                 btn.className = "download-btn";
-                const match = link.match(/\[(.*?)\](.*)/);
-                let label = "İNDİR", urlLink = link;
                 
-                if (match) { 
-                    label = match[1].toUpperCase(); 
-                    urlLink = match[2]; 
+                // [ETİKET]URL ayıklama
+                const match = rawLink.match(/\[(.*?)\](.*)/);
+                let label = "İNDİR";
+                let finalUrl = rawLink.trim();
+
+                if (match) {
+                    label = match[1].toUpperCase();
+                    finalUrl = match[2].trim();
                 }
 
-                if (!urlLink.startsWith('http')) {
-                    const base = app.type === "ANA" ? "FIXING-BY/fixapp" : "hasaneymenkartalprollc8-gif/apps";
-                    btn.href = `https://raw.githubusercontent.com/${base}/main/${urlLink}`;
-                    btn.setAttribute('download', '');
-                    
-                    // Akıllı isimlendirme (Dosya ise)
-                    if (label === "İNDİR") btn.textContent = "DOSYAYI İNDİR";
-                    else btn.textContent = label + " SÜRÜMÜNÜ İNDİR";
+                btn.textContent = label;
 
-                } else {
-                    btn.href = urlLink; 
-                    btn.target = "_blank"; 
+                // Dosya mı yoksa Web Linki mi?
+                if (!finalUrl.startsWith('http')) {
+                    const base = app.type === "ANA" ? "FIXING-BY/fixapp" : "hasaneymenkartalprollc8-gif/apps";
+                    const fullPath = `https://raw.githubusercontent.com/${base}/main/${finalUrl}`;
                     
-                    // Akıllı isimlendirme (Dış Link ise)
-                    if (label === "İNDİR") btn.textContent = "SİTEYE GİT";
-                    else if (label === "WEB") btn.textContent = "WEB SİTESİNE GİT";
-                    else btn.textContent = label + " SÜRÜMÜNE GİT";
+                    btn.href = fullPath;
+                    btn.setAttribute('download', finalUrl); // Dosyayı zorla indirir
+                    
+                    // GitHub bazen direkt indirmeye izin vermez, sağ tık yapmasınlar diye:
+                    btn.onclick = (e) => {
+                        if (label === "İNDİR" || label === "DOSYA") {
+                            // Direkt indirme linkine yönlendir (raw)
+                            window.location.href = fullPath;
+                        }
+                    };
+                } else {
+                    btn.href = finalUrl;
+                    btn.target = "_blank";
                 }
                 cont.appendChild(btn);
             });
